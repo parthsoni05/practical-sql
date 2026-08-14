@@ -423,20 +423,20 @@ CREATE TABLE songs (
 
 CREATE TABLE albums (
     album_id bigint GENERATED ALWAYS AS IDENTITY,
-    catalog_code text NOT NULL,
+    catalog_code text,
     title text NOT NULL,
     artist text NOT NULL,
     release_date date,
     genre text,
     description text,
     CONSTRAINT album_id_key PRIMARY KEY (album_id),
-    CONSTRAINT release_date_check CHECK (release_date > '1/1/1925')
+    CONSTRAINT release_date_check CHECK (release_date >= '1925-01-01')
 );
 
 CREATE TABLE songs (
     song_id bigint GENERATED ALWAYS AS IDENTITY,
     title text NOT NULL,
-    composer text NOT NULL,
+    composers text NOT NULL,
     album_id bigint REFERENCES albums (album_id),
     CONSTRAINT song_id_key PRIMARY KEY (song_id)
 );
@@ -447,12 +447,12 @@ CREATE TABLE songs (
 
 -- b) The songs table references albums via a foreign key constraint.
 
--- c) In both tables, the title and artist/composer columns cannot be empty, which
+-- c) In both tables, the title and artist/composers columns cannot be empty, which
 -- is specified via a NOT NULL constraint. We assume that every album and
 -- song should at minimum have that information.
 
 -- d) In albums, the release_date column has a CHECK constraint
--- because it would be likely impossible for us to own an LP made before 1925.
+-- because it would be highly unlikely for us to own an LP made before 1925.
 
 
 -- 2. Instead of using album_id as a surrogate key for your primary key, are
@@ -462,8 +462,8 @@ CREATE TABLE songs (
 -- Answer:
 -- We could consider the catalog_code. We would have to answer yes to
 -- these questions:
--- 1. Is it going to be unique across all albums released by all companies?
--- 2. Will an album always have a catalog code?
+-- a) Is it going to be unique across all albums released by all companies?
+-- b) Will an album always have a catalog code?
 
 
 -- 3. To speed up queries, which columns are good candidates for indexes?
